@@ -1,6 +1,5 @@
 package com.pankov.roadtoseniour.iobuf;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 public class ByteArrayInputStream extends InputStream {
@@ -9,14 +8,20 @@ public class ByteArrayInputStream extends InputStream {
     private int index;
     private int count;
 
+    private int countOfInvokeRead;
+
     public ByteArrayInputStream(byte[] buffer) {
         this.buffer = buffer;
         this.index = 0;
         this.count = buffer.length;
     }
 
+    public int getCountOfInvokeRead() {
+        return countOfInvokeRead;
+    }
+
     @Override
-    public int read() throws IOException {
+    public int read() {
         if (index == count) {
             return -1;
         }
@@ -24,15 +29,18 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte[] b) throws IOException {
+    public int read(byte[] b) {
         return read(b, 0, b.length);
     }
 
     @Override
-    public int read(byte[] b, int off, int len) throws IOException {
+    public int read(byte[] b, int off, int len) {
+        countOfInvokeRead++;
+
         if (len + off > b.length) {
             throw new IndexOutOfBoundsException();
         }
+
         int countOfNotReaded = count - index;
 
         if (countOfNotReaded <= 0) {
@@ -41,8 +49,10 @@ public class ByteArrayInputStream extends InputStream {
         if (countOfNotReaded < len) {
             len = countOfNotReaded;
         }
+
         System.arraycopy(buffer, index, b, off, len);
         index += len;
+
         return len;
     }
 }

@@ -3,8 +3,6 @@ package com.pankov.roadtoseniour.iobuf;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-//import java.io.ByteArrayOutputStream;
-//import java.io.BufferedOutputStream;
 import java.io.IOException;
 
 public class BufferedOutputStreamTest {
@@ -30,7 +28,6 @@ public class BufferedOutputStreamTest {
         outputStream.write(new byte[]{1, 2, 3});
         outputStream.write(new byte[]{4, 5});
         outputStream.flush();
-
         byte[] array = byteArrayOS.toByteArray();
 
         assertEquals(5, array.length);

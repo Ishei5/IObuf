@@ -20,16 +20,6 @@ public class BufferedOutputStream extends OutputStream {
         this.buffer = new byte[capacity];
     }
 
-    private void flushBuff() throws IOException {
-        outputStream.write(buffer, 0, index);
-        index = 0;
-    }
-    @Override
-    public void flush() throws IOException {
-        flushBuff();
-        outputStream.flush();
-    }
-
     @Override
     public void write(int b) throws IOException {
         if (index == buffer.length) {
@@ -38,7 +28,7 @@ public class BufferedOutputStream extends OutputStream {
         buffer[index++] = (byte) b;
     }
 
-    /*@Override
+    @Override
     public void write(byte[] b) throws IOException {
         write(b, 0, b.length);
     }
@@ -46,18 +36,35 @@ public class BufferedOutputStream extends OutputStream {
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
         int availableInBuffer = buffer.length - index;
-        if (availableInBuffer < len) {
-            flush();
+
+        if (buffer.length < len) {
+            flushBuff();
             outputStream.write(b, off, len);
-        } else {
-            System.arraycopy(b, off, buffer, index, len);
         }
-    }*/
+
+        if (availableInBuffer < len) {
+            flushBuff();
+        }
+
+        System.arraycopy(b, off, buffer, index, len);
+        index += len;
+    }
+
+    @Override
+    public void flush() throws IOException {
+        flushBuff();
+        outputStream.flush();
+    }
 
     @Override
     public void close() throws IOException {
         flush();
         index = 0;
         outputStream.close();
+    }
+
+    private void flushBuff() throws IOException {
+        outputStream.write(buffer, 0, index);
+        index = 0;
     }
 }

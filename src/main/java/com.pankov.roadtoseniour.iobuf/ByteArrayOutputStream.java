@@ -1,6 +1,5 @@
 package com.pankov.roadtoseniour.iobuf;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
@@ -12,11 +11,6 @@ public class ByteArrayOutputStream extends OutputStream {
 
     private int countOfInvokeWrite;
 
-    public int getCountOfInvokeWrite() {
-        return countOfInvokeWrite;
-    }
-
-
     public ByteArrayOutputStream() {
         this.buffer = new byte[INITIAL_CAPACITY];
     }
@@ -25,8 +19,12 @@ public class ByteArrayOutputStream extends OutputStream {
         this.buffer = new byte[capacity];
     }
 
+    public int getCountOfInvokeWrite() {
+        return countOfInvokeWrite;
+    }
+
     @Override
-    public void write(int b) throws IOException {
+    public void write(int b) {
         if (index == buffer.length - 1) {
             ensureCapacity();
         }
@@ -34,7 +32,7 @@ public class ByteArrayOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
+    public void write(byte[] b, int off, int len) {
         countOfInvokeWrite++;
         if (buffer.length - index < len) {
             ensureCapacity(len);
@@ -44,7 +42,7 @@ public class ByteArrayOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(byte[] b) throws IOException {
+    public void write(byte[] b) {
         write(b, 0, b.length);
     }
 
@@ -62,8 +60,7 @@ public class ByteArrayOutputStream extends OutputStream {
     }
 
     public byte[] toByteArray() {
-        byte[] newBuffer = Arrays.copyOf(buffer, index);
-        return newBuffer;
+        return Arrays.copyOf(buffer, index);
     }
 
     @Override
