@@ -9,18 +9,12 @@ public class ByteArrayOutputStream extends OutputStream {
     private int index;
     private byte[] buffer;
 
-    private int countOfInvokeWrite;
-
     public ByteArrayOutputStream() {
         this.buffer = new byte[INITIAL_CAPACITY];
     }
 
     public ByteArrayOutputStream(int capacity) {
         this.buffer = new byte[capacity];
-    }
-
-    public int getCountOfInvokeWrite() {
-        return countOfInvokeWrite;
     }
 
     @Override
@@ -33,7 +27,6 @@ public class ByteArrayOutputStream extends OutputStream {
 
     @Override
     public void write(byte[] b, int off, int len) {
-        countOfInvokeWrite++;
         if (buffer.length - index < len) {
             ensureCapacity(len);
         }
@@ -56,7 +49,6 @@ public class ByteArrayOutputStream extends OutputStream {
         byte[] newBuffer = new byte[(int) (buffer.length + addCapacity)];
         System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
         buffer = newBuffer;
-        countOfInvokeWrite++;
     }
 
     public byte[] toByteArray() {

@@ -29,25 +29,27 @@ public class BufferedOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(byte[] b) throws IOException {
-        write(b, 0, b.length);
+    public void write(byte[] array) throws IOException {
+        write(array, 0, array.length);
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
+    public void write(byte[] array, int offset, int arrayLength) throws IOException {
+
+        if (buffer.length <= arrayLength) {
+            flushBuff();
+            outputStream.write(array, offset, arrayLength);
+            return;
+        }
+
         int availableInBuffer = buffer.length - index;
 
-        if (buffer.length < len) {
-            flushBuff();
-            outputStream.write(b, off, len);
-        }
-
-        if (availableInBuffer < len) {
+        if (availableInBuffer < arrayLength) {
             flushBuff();
         }
 
-        System.arraycopy(b, off, buffer, index, len);
-        index += len;
+        System.arraycopy(array, offset, buffer, index, arrayLength);
+        index += arrayLength;
     }
 
     @Override
@@ -59,7 +61,6 @@ public class BufferedOutputStream extends OutputStream {
     @Override
     public void close() throws IOException {
         flush();
-        index = 0;
         outputStream.close();
     }
 

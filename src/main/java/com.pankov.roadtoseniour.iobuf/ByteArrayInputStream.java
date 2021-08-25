@@ -8,16 +8,10 @@ public class ByteArrayInputStream extends InputStream {
     private int index;
     private int count;
 
-    private int countOfInvokeRead;
-
     public ByteArrayInputStream(byte[] buffer) {
         this.buffer = buffer;
         this.index = 0;
         this.count = buffer.length;
-    }
-
-    public int getCountOfInvokeRead() {
-        return countOfInvokeRead;
     }
 
     @Override
@@ -35,7 +29,6 @@ public class ByteArrayInputStream extends InputStream {
 
     @Override
     public int read(byte[] b, int off, int len) {
-        countOfInvokeRead++;
 
         if (len + off > b.length) {
             throw new IndexOutOfBoundsException();

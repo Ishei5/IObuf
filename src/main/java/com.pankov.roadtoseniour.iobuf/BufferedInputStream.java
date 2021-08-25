@@ -24,10 +24,7 @@ public class BufferedInputStream extends InputStream {
 
     @Override
     public int read() throws IOException {
-        if (index == count) {
-            count = inputStream.read(buffer);
-            index = 0;
-        }
+        fillBuffer();
 
         if (count == -1) {
             return -1;
@@ -37,17 +34,22 @@ public class BufferedInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte[] b) throws IOException {
-        return read(b, 0, b.length);
+    public int read(byte[] array) throws IOException {
+        return read(array, 0, array.length);
     }
 
     @Override
-    public int read(byte[] b, int off, int len) throws IOException {
+    public int read(byte[] array, int offset, int arrayLength) throws IOException {
 
-        if (index == count) {
-            count = inputStream.read(buffer);
-            index = 0;
+        if (arrayLength + offset > array.length) {
+            throw new ArrayIndexOutOfBoundsException("Count of elements exceed array length");
         }
+
+        if (arrayLength > buffer.length && index == count) {
+            return inputStream.read(array);
+        }
+
+        fillBuffer();
 
         if (count == -1) {
             return -1;
@@ -55,24 +57,22 @@ public class BufferedInputStream extends InputStream {
 
         int availableInBuffer = count - index;
 
-        if (availableInBuffer < len) {
-            System.arraycopy(buffer, index, b, off, availableInBuffer);
-            count = inputStream.read(buffer);
-
-            if (count == -1) {
-                return availableInBuffer;
-            }
-
-            index = 0;
-            int length = len - availableInBuffer;
-            System.arraycopy(buffer, index, b, off + availableInBuffer, length);
-            index += length;
-            return len;
+        if (availableInBuffer < arrayLength) {
+            System.arraycopy(buffer, index, array, offset, availableInBuffer);
+            index = count;
+            return availableInBuffer;
         } else {
-            int length = Math.min(availableInBuffer, len);
-            System.arraycopy(buffer, index, b, off, length);
+            int length = Math.min(availableInBuffer, arrayLength);
+            System.arraycopy(buffer, index, array, offset, length);
             index += length;
             return length;
+        }
+    }
+
+    private void fillBuffer() throws IOException {
+        if (index == count) {
+            count = inputStream.read(buffer);
+            index = 0;
         }
     }
 
