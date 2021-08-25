@@ -39,13 +39,13 @@ public class BufferedInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte[] array, int offset, int arrayLength) throws IOException {
+    public int read(byte[] array, int offset, int countToRead) throws IOException {
 
-        if (arrayLength + offset > array.length) {
+        if (countToRead + offset > array.length) {
             throw new ArrayIndexOutOfBoundsException("Count of elements exceed array length");
         }
 
-        if (arrayLength > buffer.length && index == count) {
+        if (countToRead > buffer.length && index == count) {
             return inputStream.read(array);
         }
 
@@ -57,12 +57,13 @@ public class BufferedInputStream extends InputStream {
 
         int availableInBuffer = count - index;
 
-        if (availableInBuffer < arrayLength) {
+        if (availableInBuffer < countToRead) {
             System.arraycopy(buffer, index, array, offset, availableInBuffer);
+            int readedCount = inputStream.read(array, availableInBuffer, countToRead - availableInBuffer);
             index = count;
-            return availableInBuffer;
+            return availableInBuffer + readedCount;
         } else {
-            int length = Math.min(availableInBuffer, arrayLength);
+            int length = Math.min(availableInBuffer, countToRead);
             System.arraycopy(buffer, index, array, offset, length);
             index += length;
             return length;

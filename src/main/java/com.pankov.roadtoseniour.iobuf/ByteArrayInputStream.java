@@ -48,4 +48,8 @@ public class ByteArrayInputStream extends InputStream {
 
         return len;
     }
+
+    public int available() {
+        return count - index;
+    }
 }

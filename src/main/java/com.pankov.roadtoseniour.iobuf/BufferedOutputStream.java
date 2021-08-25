@@ -34,22 +34,22 @@ public class BufferedOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(byte[] array, int offset, int arrayLength) throws IOException {
+    public void write(byte[] array, int offset, int countToWrite) throws IOException {
 
-        if (buffer.length <= arrayLength) {
+        if (buffer.length <= countToWrite) {
             flushBuff();
-            outputStream.write(array, offset, arrayLength);
+            outputStream.write(array, offset, countToWrite);
             return;
         }
 
         int availableInBuffer = buffer.length - index;
 
-        if (availableInBuffer < arrayLength) {
+        if (availableInBuffer < countToWrite) {
             flushBuff();
         }
 
-        System.arraycopy(array, offset, buffer, index, arrayLength);
-        index += arrayLength;
+        System.arraycopy(array, offset, buffer, index, countToWrite);
+        index += countToWrite;
     }
 
     @Override

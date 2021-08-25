@@ -107,8 +107,8 @@ public class BufferedInputStreamTest {
         byte[] array2 = new byte[3];
         int count2 = inputStream.read(array2);
 
-        assertEquals(2, count2);
-        assertArrayEquals(new byte[]{3, 4, 0}, array2);
+        assertEquals(3, count2);
+        assertArrayEquals(new byte[]{3, 4, 5}, array2);
     }
 
     @Test
@@ -152,27 +152,22 @@ public class BufferedInputStreamTest {
 
         byte[] array3 = new byte[4];
         int count3 = inputStream.read(array3);
-        assertEquals(1, count3);
-        assertArrayEquals(new byte[]{7, 0, 0, 0}, array3);
+        assertEquals(4, count3);
+        assertArrayEquals(new byte[]{7, 8, 9, 10}, array3);
 
         byte[] array4 = new byte[3];
         int count4 = inputStream.read(array4);
         assertEquals(3, count4);
-        assertArrayEquals(new byte[]{8, 9, 10}, array4);
+        assertArrayEquals(new byte[]{11, 12, 13}, array4);
 
         byte[] array5 = new byte[2];
         int count5 = inputStream.read(array5);
         assertEquals(2, count5);
-        assertArrayEquals(new byte[]{11, 12}, array5);
+        assertArrayEquals(new byte[]{14, 15}, array5);
 
-        int count6 = inputStream.read(array5);
-        assertEquals(1, count6);
-        assertArrayEquals(new byte[]{13, 12}, array5);
-
-        byte[] array7 = new byte[5];
-        int count7 = inputStream.read(array7);
-        assertEquals(4, count7);
-        assertArrayEquals(new byte[]{14, 15, 16, 17, 0}, array7);
+        int count6 = inputStream.read(array4);
+        assertEquals(2, count6);
+        assertArrayEquals(new byte[]{16, 17, 13}, array4);
 
         assertEquals(-1, inputStream.read(array2));
     }
